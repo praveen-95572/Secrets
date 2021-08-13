@@ -1,3 +1,4 @@
+//jshint esversion:6
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -61,7 +62,8 @@ passport.use(new GoogleStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
     callbackURL: "http://localhost:3000/auth/google/secrets",
-    userProfileURL: "http://www.google.com/oauth2/v3/userinfo"
+    userProfileURL: "http://www.googleapis.com/oauth2/v3/userinfo",
+    passReqToCallback:true
   },
   function(accessToken, refreshToken, profile, cb) {
       console.log(profile);
@@ -78,7 +80,7 @@ app.get("/", function(req , res){
 });
 
 app.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile'] }));
+  passport.authenticate('google', { scope: [ 'https://www.googleapis.com/auth/userinfo.profile'] }));
 
 app.get("/auth/google/secrets", 
   passport.authenticate('google', { failureRedirect: "/login" }),
